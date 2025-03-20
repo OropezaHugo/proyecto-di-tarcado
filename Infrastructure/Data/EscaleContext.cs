@@ -1,4 +1,3 @@
-using Core.dtos.dtoID;
 using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,5 +10,6 @@ public class EscaleContext(DbContextOptions options): DbContext(options)
     public DbSet<Plate> Plates { get; set; }
     public DbSet<PlateOrder> UserPlates { get; set; }
     public DbSet<PlateIngredients> PlateIngredients { get; set; }
-    public DbSet<OrderDto> Orders { get; set; }
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<PlateOrder> PlateOrders { get; set; }
 }
