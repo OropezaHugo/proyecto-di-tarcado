@@ -1,4 +1,3 @@
-using Api.idHelper;
 using Api.repositories;
 using Api.services.interfaces;
 using AutoMapper;
@@ -12,13 +11,11 @@ public class PlateService: IPlateService
 {
   private readonly PlateRepository _repository;
   private readonly IMapper _mapper;
-  private readonly IIdHelper<Plate> _idHelper;
 
-  public PlateService(PlateRepository repository, IMapper mapper, IIdHelper<Plate> idHelper)
+  public PlateService(PlateRepository repository, IMapper mapper)
   {
     _repository = repository;
     _mapper = mapper;
-    _idHelper = idHelper;
   }
   
   public async Task<IEnumerable<PlateDto>> GetAll()
@@ -42,8 +39,7 @@ public class PlateService: IPlateService
 
   public async Task<PlateDto?> Add(PlateNoIdDto entity)
   {
-    var nextId = _idHelper.ObtenerUltimoId(await _repository.GetAll()) + 1;
-    var mappedEntity = _mapper.Map<Plate>((entity, nextId));
+    var mappedEntity = _mapper.Map<Plate>(entity);
     
     var newEntity = await _repository.Add(mappedEntity);
     var entityDto = _mapper.Map<PlateDto?>(newEntity);

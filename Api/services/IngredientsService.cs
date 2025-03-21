@@ -1,4 +1,3 @@
-using Api.idHelper;
 using Api.repositories;
 using Api.services.interfaces;
 using AutoMapper;
@@ -12,13 +11,11 @@ public class IngredientsService: IIngredientService
 {
   private readonly IngrdientsRepository _repository;
   private readonly IMapper _mapper;
-  private readonly IIdHelper<Ingredient> _idHelper;
 
-  public IngredientsService(IngrdientsRepository repository, IMapper mapper, IIdHelper<Ingredient> idHelper)
+  public IngredientsService(IngrdientsRepository repository, IMapper mapper)
   {
     _repository = repository;
     _mapper = mapper;
-    _idHelper = idHelper;
   }
 
 
@@ -43,8 +40,7 @@ public class IngredientsService: IIngredientService
 
   public async Task<IngredientDto?> Add(IngredientNoIdDto entity)
   {
-    var nextId = _idHelper.ObtenerUltimoId(await _repository.GetAll()) + 1;
-    var mappedEntity = _mapper.Map<Ingredient>((entity, nextId));
+    var mappedEntity = _mapper.Map<Ingredient>(entity);
     
     var newEntity = await _repository.Add(mappedEntity);
     var entityDto = _mapper.Map<IngredientDto?>(newEntity);

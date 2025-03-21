@@ -1,4 +1,3 @@
-using Api.idHelper;
 using Api.repositories;
 using Api.services.interfaces;
 using AutoMapper;
@@ -12,13 +11,11 @@ public class PlateOrderService : IPlateOrderService
 {
   private readonly PlateOrderRepository _repository;
   private readonly IMapper _mapper;
-  private readonly IIdHelper<PlateOrder> _idHelper;
 
-  public PlateOrderService(PlateOrderRepository repository, IMapper mapper, IIdHelper<PlateOrder> idHelper)
+  public PlateOrderService(PlateOrderRepository repository, IMapper mapper)
   {
     _repository = repository;
     _mapper = mapper;
-    _idHelper = idHelper;
   }
   
   public async Task<IEnumerable<PlateOrderDto>> GetAll()
@@ -42,8 +39,7 @@ public class PlateOrderService : IPlateOrderService
 
   public async Task<PlateOrderDto?> Add(PlateOrderNoIdDto entity)
   {
-    var nextId = _idHelper.ObtenerUltimoId(await _repository.GetAll()) + 1;
-    var mappedEntity = _mapper.Map<PlateOrder>((entity, nextId));
+    var mappedEntity = _mapper.Map<PlateOrder>(entity);
     
     var newEntity = await _repository.Add(mappedEntity);
     var entityDto = _mapper.Map<PlateOrderDto?>(newEntity);

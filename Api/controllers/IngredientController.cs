@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Api.controllers;
 
-[Controller]
+[ApiController]
 [Route("api/[controller]")]
 public class IngredientController: ControllerBase
 {
@@ -46,9 +46,16 @@ public class IngredientController: ControllerBase
     return Ok(response);
   }
   
-  public async Task<ActionResult<IngredientDto>> Update([FromBody] IngredientDto entity)
+  [HttpPut("{id}")]
+  public async Task<ActionResult<IngredientDto>> Update([FromRoute] int id, [FromBody] IngredientDto entity)
   {
-    var newEntity = await _service.GetById(entity.Id);
-    return Ok(newEntity);
+    if (id != entity.Id)
+    {
+      return BadRequest("Ids are not equal.");
+    }
+
+    var updatedEntity = await _service.Put(entity);
+    return Ok(updatedEntity);
   }
+
 }

@@ -9,4 +9,6 @@ public class Order: BaseEntity
   public User? User { get; set; }
   public int PlateOrderId  { get; set; }
   [ForeignKey(nameof(PlateOrderId))]
-  public User? PlateOrder { get; set; }}
+  public PlateOrder? PlateOrder { get; set; }
+}
+  

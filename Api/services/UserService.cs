@@ -1,4 +1,3 @@
-using Api.idHelper;
 using Api.repositories;
 using Api.services.interfaces;
 using AutoMapper;
@@ -12,13 +11,11 @@ public class UserService:  IUserService
 {
   private readonly UserRepository _repository;
   private readonly IMapper _mapper;
-  private readonly IIdHelper<User> _idHelper;
 
-  public UserService(UserRepository repository, IMapper mapper, IIdHelper<User> idHelper)
+  public UserService(UserRepository repository, IMapper mapper)
   {
     _repository = repository;
     _mapper = mapper;
-    _idHelper = idHelper;
   }
   
   public async Task<IEnumerable<UserDto>> GetAll()
@@ -42,8 +39,7 @@ public class UserService:  IUserService
 
   public async Task<UserDto?> Add(UserNoIdDto entity)
   {
-    var nextId = _idHelper.ObtenerUltimoId(await _repository.GetAll()) + 1;
-    var mappedEntity = _mapper.Map<User>((entity, nextId));
+    var mappedEntity = _mapper.Map<User>(entity);
     
     var newEntity = await _repository.Add(mappedEntity);
     var entityDto = _mapper.Map<UserDto?>(newEntity);

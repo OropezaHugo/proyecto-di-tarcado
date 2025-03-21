@@ -1,4 +1,3 @@
-using Api.idHelper;
 using Api.repositories;
 using Api.services.interfaces;
 using AutoMapper;
@@ -12,13 +11,11 @@ public class OrderService: IOrderService
 {
   private readonly OrderRepository _repository;
   private readonly IMapper _mapper;
-  private readonly IIdHelper<Order> _idHelper;
 
-  public OrderService(OrderRepository repository, IMapper mapper, IIdHelper<Order> idHelper)
+  public OrderService(OrderRepository repository, IMapper mapper)
   {
     _repository = repository;
     _mapper = mapper;
-    _idHelper = idHelper;
   }
   
   public async Task<IEnumerable<OrderDto>> GetAll()
@@ -42,8 +39,7 @@ public class OrderService: IOrderService
 
   public async Task<OrderDto?> Add(OrderNoIdDto entity)
   {
-    var nextId = _idHelper.ObtenerUltimoId(await _repository.GetAll()) + 1;
-    var mappedEntity = _mapper.Map<Order>((entity, nextId));
+    var mappedEntity = _mapper.Map<Order>(entity);
     
     var newEntity = await _repository.Add(mappedEntity);
     var entityDto = _mapper.Map<OrderDto?>(newEntity);

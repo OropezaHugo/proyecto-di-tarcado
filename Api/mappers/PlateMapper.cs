@@ -7,13 +7,12 @@ namespace Api.mappers;
 
 public class PlateMapper: Profile
 {
-  protected PlateMapper()
+  public PlateMapper()
   {
-    CreateMap<PlateDto, Plate>().ReverseMap();
-    CreateMap<(PlateNoIdDto, int), Plate>()
-      .ForMember(i => i.Id, x => x.MapFrom(n => n.Item2))
-      .ForMember(i => i.Name, x => x.MapFrom(n => n.Item1.Name))
-      .ForMember(i => i.Price, x => x.MapFrom(n => n.Item1.Price))
+    CreateMap<PlateIngredientDto, PlateIngredients>().ReverseMap();
+    CreateMap<PlateIngredientDto, PlateIngredients>()
+      .ForMember(i => i.PlateId, x => x.MapFrom(n => n.PlateId))
+      .ForMember(i => i.IngredientId, x => x.MapFrom(n => n.IngredientId))
       .ReverseMap();
   }
 }
