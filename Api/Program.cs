@@ -16,6 +16,11 @@ builder.Services.AddScoped<PlateOrderRepository>();
 builder.Services.AddScoped<UserRepository>();
 
 builder.Services.AddScoped<IIngredientService, IngredientsService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IPlateService, PlateService>();
+builder.Services.AddScoped<IPlateOrderService, PlateOrderService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IPlateIngredientService, PlateIngredientService>();
 builder.Services.AddControllers();
 
 // Configurar Swagger
