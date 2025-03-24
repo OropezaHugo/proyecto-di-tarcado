@@ -40,6 +40,10 @@ public class UserController : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult<UserDto>> Update([FromRoute] int id, [FromBody] UserDto entity)
     {
+        if (id != entity.Id)
+        {
+            return BadRequest("Ids are not equal.");
+        }
         var updatedEntity = await _userService.Put(entity);
         return Ok(updatedEntity);
     }
