@@ -17,43 +17,64 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<UserDto>>> GetAll()
+    public async Task<ActionResult<List<UserDto>>> GetUsers()
     {
         var users = await _userService.GetAll();
-        return Ok(users);
+        return users is not null && users.Any() ? Ok(users) : NoContent();
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<UserDto>> GetById(int id)
+    public async Task<ActionResult<UserDto>> GetUser(int id)
     {
         var user = await _userService.GetById(id);
-        return Ok(user);
+        return user is not null ? Ok(user) : NotFound($"User with ID {id} not found.");
     }
 
     [HttpPost]
-    public async Task<ActionResult<UserDto>> Create([FromBody] UserNoIdDto entity)
+    public async Task<ActionResult<UserDto>> CreateUser([FromBody] UserNoIdDto entity)
     {
+        if (entity == null)
+        {
+            return BadRequest("Invalid user data.");
+        }
+
         var response = await _userService.Add(entity);
-        return Ok(response);
+        return CreatedAtAction(nameof(GetUser), new { id = response.Id }, response);
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<UserDto>> Update([FromRoute] int id, [FromBody] UserDto entity)
+    public async Task<ActionResult<UserDto>> UpdateUser([FromRoute] int id, [FromBody] UserDto entity)
     {
-        if (id != entity.Id)
+        if (entity == null || id != entity.Id)
         {
-            return BadRequest("Ids are not equal.");
+            return BadRequest("Invalid data. Ensure IDs match and request body is correct.");
         }
+
+        var existingUser = await _userService.GetById(id);
+        if (existingUser == null)
+        {
+            return NotFound($"User with ID {id} not found.");
+        }
+
         var updatedEntity = await _userService.Put(entity);
         return Ok(updatedEntity);
     }
 
     [HttpDelete("{id}")]
-    public async Task<ActionResult> Delete([FromRoute] int id)
+    public async Task<ActionResult> DeleteUser([FromRoute] int id)
     {
+        if (id <= 0)
+        {
+            return BadRequest("Invalid user ID.");
+        }
+        
+        var existingUser = await _userService.GetById(id);
+        if (existingUser == null)
+        {
+            return NotFound($"User with ID {id} not found.");
+        }
+
         var response = await _userService.Delete(id);
-        if (response)
-            return NoContent();
-        return Ok(response);
+        return response ? NoContent() : BadRequest("Failed to delete the user.");
     }
 }

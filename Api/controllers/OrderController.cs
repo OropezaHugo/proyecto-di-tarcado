@@ -19,39 +19,67 @@ public class OrderController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<OrderDto>>> GetOrders()
     {
-        var entites = await _orderService.GetAll();
-        return Ok(entites);
+        var entities = await _orderService.GetAll();
+        return entities is not null && entities.Any() ? Ok(entities) : NoContent();
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<OrderDto>> GetOrder(int id)
     {
-        var entity = await _orderService.GetById(id);
-        return Ok(entity);
-    }
+        if (id <= 0)
+        {
+            return BadRequest("Invalid order ID.");
+        }
 
-    [HttpDelete("{id}")]
-    public async Task<ActionResult> Delete([FromRoute] int id)
-    {
-        var response = await _orderService.Delete(id);
-        if (response)
-            return NoContent();
-        return Ok(response);
+        var entity = await _orderService.GetById(id);
+        return entity is not null ? Ok(entity) : NotFound($"Order with ID {id} not found.");
     }
 
     [HttpPost]
-    public async Task<ActionResult<OrderDto>> Post([FromBody] OrderNoIdDto order)
+    public async Task<ActionResult<OrderDto>> CreateOrder([FromBody] OrderNoIdDto order)
     {
+        if (order == null)
+        {
+            return BadRequest("Invalid order data.");
+        }
+
         var response = await _orderService.Add(order);
-        return Ok(response); 
+        return CreatedAtAction(nameof(GetOrder), new { id = response.Id }, response);
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<OrderDto>> Put([FromRoute] int id, [FromBody] OrderDto order)
+    public async Task<ActionResult<OrderDto>> UpdateOrder([FromRoute] int id, [FromBody] OrderDto order)
     {
-        if(id != order.Id)
-            return BadRequest("Ids are not equal");
+        if (order == null || id != order.Id)
+        {
+            return BadRequest("Invalid data. Ensure IDs match and request body is correct.");
+        }
+
+        var existingOrder = await _orderService.GetById(id);
+        if (existingOrder == null)
+        {
+            return NotFound($"Order with ID {id} not found.");
+        }
+
         var updatedEntity = await _orderService.Put(order);
         return Ok(updatedEntity);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteOrder([FromRoute] int id)
+    {
+        if (id <= 0)
+        {
+            return BadRequest("Invalid order ID.");
+        }
+
+        var existingOrder = await _orderService.GetById(id);
+        if (existingOrder == null)
+        {
+            return NotFound($"Order with ID {id} not found.");
+        }
+
+        var response = await _orderService.Delete(id);
+        return response ? NoContent() : BadRequest("Failed to delete the order.");
     }
 }

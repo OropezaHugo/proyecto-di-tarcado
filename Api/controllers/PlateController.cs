@@ -1,7 +1,6 @@
 using Api.services.interfaces;
 using Core.dtos.dtoID;
 using Core.dtos.dtoNoID;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.controllers;
@@ -21,36 +20,66 @@ public class PlateController : ControllerBase
     public async Task<ActionResult<List<PlateDto>>> GetPlates()
     {
         var response = await _plateService.GetAll();
-        return Ok(response);
+        return response is not null && response.Any() ? Ok(response) : NoContent();
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<PlateDto>> GetPlate(int id)
     {
+        if (id <= 0)
+        {
+            return BadRequest("Invalid plate ID.");
+        }
+
         var response = await _plateService.GetById(id);
-        return Ok(response);
+        return response is not null ? Ok(response) : NotFound($"Plate with ID {id} not found.");
     }
 
     [HttpPost]
     public async Task<ActionResult<PlateDto>> CreatePlate([FromBody] PlateNoIdDto entity)
     {
+        if (entity == null)
+        {
+            return BadRequest("Invalid plate data.");
+        }
+
         var response = await _plateService.Add(entity);
-        return Ok(response);
+        return CreatedAtAction(nameof(GetPlate), new { id = response.Id }, response);
     }
 
     [HttpPut("{id}")]
     public async Task<ActionResult<PlateDto>> UpdatePlate([FromRoute] int id, [FromBody] PlateDto entity)
     {
+        if (entity == null || id != entity.Id)
+        {
+            return BadRequest("Invalid data. Ensure IDs match and request body is correct.");
+        }
+
+        var existingPlate = await _plateService.GetById(id);
+        if (existingPlate == null)
+        {
+            return NotFound($"Plate with ID {id} not found.");
+        }
+
         var updatedEntity = await _plateService.Put(entity);
         return Ok(updatedEntity);
     }
-    
+
     [HttpDelete("{id}")]
-    public async Task<ActionResult> Delete([FromRoute] int id)
+    public async Task<ActionResult> DeletePlate([FromRoute] int id)
     {
+        if (id <= 0)
+        {
+            return BadRequest("Invalid plate ID.");
+        }
+
+        var existingPlate = await _plateService.GetById(id);
+        if (existingPlate == null)
+        {
+            return NotFound($"Plate with ID {id} not found.");
+        }
+
         var response = await _plateService.Delete(id);
-        if (response)
-            return NoContent();
-        return Ok(Response);
+        return response ? NoContent() : BadRequest("Failed to delete the plate.");
     }
 }
