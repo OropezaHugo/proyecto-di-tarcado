@@ -25,12 +25,12 @@ public class OrderRepository: IRepository<Order>
 
   public async Task<bool> Delete(int id)
   {
-    var ingredient = await _context.Orders.FindAsync(id);
+    var order = await _context.Orders.FindAsync(id);
     
-    if (ingredient == null)
+    if (order == null)
       return false;
     
-    _context.Orders.Remove(ingredient);
+    _context.Orders.Remove(order);
     await _context.SaveChangesAsync();
     return true;
   }

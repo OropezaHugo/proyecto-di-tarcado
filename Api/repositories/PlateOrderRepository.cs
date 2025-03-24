@@ -25,12 +25,12 @@ public class PlateOrderRepository: IRepository<PlateOrder>
 
   public async Task<bool> Delete(int id)
   {
-    var ingredient = await _context.PlateOrders.FindAsync(id);
+    var plateOrder = await _context.PlateOrders.FindAsync(id);
     
-    if (ingredient == null)
+    if (plateOrder == null)
       return false;
     
-    _context.PlateOrders.Remove(ingredient);
+    _context.PlateOrders.Remove(plateOrder);
     await _context.SaveChangesAsync();
     return true;
   }

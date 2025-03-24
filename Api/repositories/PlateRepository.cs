@@ -25,12 +25,12 @@ public class PlateRepository: IRepository<Plate>
 
   public async Task<bool> Delete(int id)
   {
-    var ingredient = await _context.Plates.FindAsync(id);
+    var plate = await _context.Plates.FindAsync(id);
     
-    if (ingredient == null)
+    if (plate == null)
       return false;
     
-    _context.Plates.Remove(ingredient);
+    _context.Plates.Remove(plate);
     await _context.SaveChangesAsync();
     return true;
   }

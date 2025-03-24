@@ -25,12 +25,12 @@ public class UserRepository: IRepository<User>
 
   public async Task<bool> Delete(int id)
   {
-    var ingredient = await _context.Users.FindAsync(id);
+    var user = await _context.Users.FindAsync(id);
     
-    if (ingredient == null)
+    if (user == null)
       return false;
     
-    _context.Users.Remove(ingredient);
+    _context.Users.Remove(user);
     await _context.SaveChangesAsync();
     return true;
   }
