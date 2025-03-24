@@ -31,6 +31,7 @@ public class UserRepository: IRepository<User>
       return false;
     
     _context.Users.Remove(ingredient);
+    await _context.SaveChangesAsync();
     return true;
   }
 

@@ -31,6 +31,7 @@ public class OrderRepository: IRepository<Order>
       return false;
     
     _context.Orders.Remove(ingredient);
+    await _context.SaveChangesAsync();
     return true;
   }
 

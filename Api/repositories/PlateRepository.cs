@@ -31,6 +31,7 @@ public class PlateRepository: IRepository<Plate>
       return false;
     
     _context.Plates.Remove(ingredient);
+    await _context.SaveChangesAsync();
     return true;
   }
 
