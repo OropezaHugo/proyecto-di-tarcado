@@ -1,31 +1,51 @@
+using Api.mappers;
+using Api.repositories;
+using Api.services;
+using Api.services.interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.AddScoped<IngrdientsRepository>();
+builder.Services.AddAutoMapper(typeof(IngredientMapper));
+builder.Services.AddScoped<OrderRepository>();
+builder.Services.AddScoped<PlateRepository>();
+builder.Services.AddScoped<PlateIngredientRepository>();
+builder.Services.AddScoped<PlateOrderRepository>();
+builder.Services.AddScoped<UserRepository>();
+
+builder.Services.AddScoped<IIngredientService, IngredientsService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IPlateService, PlateService>();
+builder.Services.AddScoped<IPlateOrderService, PlateOrderService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IPlateIngredientService, PlateIngredientService>();
+builder.Services.AddControllers();
+
+// Configurar Swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+// Agregar DbContext
 builder.Services.AddDbContext<EscaleContext>(optionsBuilder =>
 {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
     optionsBuilder.UseSqlServer(connectionString);
 });
-builder.Services.AddControllers();
+
 var app = builder.Build();
 
+app.UseAuthentication();
 app.UseAuthorization();
+app.UseHttpsRedirection();
+
+// Habilitar Swagger solo en desarrollo
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.MapControllers();
-try
-{
-    using var scoped = app.Services.CreateScope();
-    var services = scoped.ServiceProvider;
-    var context = services.GetRequiredService<EscaleContext>();
-    await context.Database.MigrateAsync();
-    await EscaleSeedData.SeedAsync(context);
-}
-catch (Exception e)
-{
-    Console.WriteLine(e);
-    throw;
-}
 app.Run();

@@ -1,2 +1,27 @@
-{
-}
+[
+  {
+    "id": 1,
+    "Name": "Alice Johnson",
+    "BirthDate": "1995-07-14"
+  },
+  {
+    "id": 2,
+    "Name": "Bob Smith",
+    "BirthDate": "1990-05-22"
+  },
+  {
+    "id": 3,
+    "Name": "Charlie Brown",
+    "BirthDate": "1988-11-30"
+  },
+  {
+    "id": 4,
+    "Name": "Diana Lopez",
+    "BirthDate": "2000-02-10"
+  },
+  {
+    "id": 5,
+    "Name": "Edward Wilson",
+    "BirthDate": "1993-09-05"
+  }
+]
