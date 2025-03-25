@@ -44,6 +44,17 @@ public class UserRepository: IRepository<User>
 
   public async Task<User> Update(User entity)
   {
+    var existingUser = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == entity.Id);
+    
+    if (existingUser != null)
+    {
+      var trackedUser = _context.Users.Local.FirstOrDefault(u => u.Id == entity.Id);
+      if (trackedUser != null)
+      {
+        _context.Entry(trackedUser).State = EntityState.Detached;
+      }
+    }
+
     _context.Users.Update(entity);
     await _context.SaveChangesAsync();
     return entity;

@@ -37,6 +37,17 @@ public class PlateIngredientRepository: IRepository<PlateIngredients>
 
   public async Task<PlateIngredients> Add(PlateIngredients entity)
   {
+    var plateExists = await _context.Plates.AnyAsync(p => p.Id == entity.PlateId);
+    if (!plateExists)
+    {
+      throw new Exception($"El plato con ID {entity.PlateId} no existe.");
+    }
+    
+    var ingredientExists = await _context.Ingredients.AnyAsync(i => i.Id == entity.IngredientId);
+    if (!ingredientExists)
+    {
+      throw new Exception($"El ingrediente con ID {entity.IngredientId} no existe.");
+    }
     _context.PlateIngredients.Add(entity);
     await _context.SaveChangesAsync();
     return entity;
@@ -44,6 +55,15 @@ public class PlateIngredientRepository: IRepository<PlateIngredients>
 
   public async Task<PlateIngredients> Update(PlateIngredients entity)
   {
+    var existingPlateIngredient = await _context.PlateIngredients.AsNoTracking().FirstOrDefaultAsync(i => i.Id == entity.Id);
+
+    if (existingPlateIngredient != null)
+    {
+      var trackedPlateIngredient = _context.PlateIngredients.Local.FirstOrDefault(i => i.Id == existingPlateIngredient.Id);
+      if(trackedPlateIngredient != null)
+        _context.Entry(trackedPlateIngredient).State = EntityState.Detached;
+    }
+    
     _context.PlateIngredients.Update(entity);
     await _context.SaveChangesAsync();
     return entity;

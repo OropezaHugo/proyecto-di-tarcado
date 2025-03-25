@@ -9,10 +9,10 @@ public class PlateMapper: Profile
 {
   public PlateMapper()
   {
-    CreateMap<PlateIngredientDto, PlateIngredients>().ReverseMap();
-    CreateMap<PlateIngredientDto, PlateIngredients>()
-      .ForMember(i => i.PlateId, x => x.MapFrom(n => n.PlateId))
-      .ForMember(i => i.IngredientId, x => x.MapFrom(n => n.IngredientId))
+    CreateMap<PlateDto, Plate>().ReverseMap();
+    CreateMap<PlateNoIdDto, Plate>()
+      .ForMember(i => i.Name, x => x.MapFrom(z => z.Name))
+      .ForMember(i => i.Price, x => x.MapFrom(z => z.Price))
       .ReverseMap();
   }
 }

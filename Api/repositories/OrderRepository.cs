@@ -37,6 +37,13 @@ public class OrderRepository: IRepository<Order>
 
   public async Task<Order> Add(Order entity)
   {
+    var userExists = await _context.Users.AnyAsync(x => x.Id == entity.UserId);
+    if (!userExists)
+      throw new Exception($"El usuario con ID {entity.UserId} no existe.");
+    
+    var plateOrder  = await _context.PlateOrders.AnyAsync(x => x.Id == entity.UserId);
+    if (!plateOrder)
+      throw new Exception($"El plateOrder con ID {entity.PlateOrderId} no existe.");
     _context.Orders.Add(entity);
     await _context.SaveChangesAsync();
     return entity;
@@ -44,6 +51,15 @@ public class OrderRepository: IRepository<Order>
 
   public async Task<Order> Update(Order entity)
   {
+    var existingOrder = await _context.Orders.AsNoTracking().FirstOrDefaultAsync(x => x.Id == entity.Id);
+
+    if (existingOrder != null)
+    {
+      var trackedOrder = _context.Orders.Local.FirstOrDefault(x => x.Id == existingOrder.Id);
+      if (trackedOrder != null)
+        _context.Entry(trackedOrder).State = EntityState.Detached;
+    }
+    
     _context.Orders.Update(entity);
     await _context.SaveChangesAsync();
     return entity;

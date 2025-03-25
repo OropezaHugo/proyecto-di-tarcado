@@ -44,6 +44,24 @@ public class PlateRepository: IRepository<Plate>
 
   public async Task<Plate> Update(Plate entity)
   {
+    var existingPlate = await _context.Plates
+      .Include(x => x.PlateIngredients)
+      .Include(x => x.UserPlates)
+      .FirstOrDefaultAsync(x => x.Id == entity.Id);
+
+    if (existingPlate != null)
+    {
+      var trackedPlate = _context.Plates.Local.FirstOrDefault(x => x.Id == entity.Id);
+      if(trackedPlate != null)
+        _context.Entry(trackedPlate).State = EntityState.Detached;
+    }
+
+    foreach (var plateIngredient in entity.PlateIngredients)
+      _context.Entry(plateIngredient).State = EntityState.Detached;
+    
+    foreach (var plateIngredient in entity.UserPlates)
+      _context.Entry(plateIngredient).State = EntityState.Detached;
+    
     _context.Plates.Update(entity);
     await _context.SaveChangesAsync();
     return entity;
