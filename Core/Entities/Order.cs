@@ -4,9 +4,7 @@ namespace Core.Entities;
 
 public class Order: BaseEntity
 {
-  public int UserId  { get; set; }
-  [ForeignKey(nameof(UserId))]
-  public User? User { get; set; }
+  public Guid UserId  { get; set; }
   public int PlateOrderId  { get; set; }
   [ForeignKey(nameof(PlateOrderId))]
   public PlateOrder? PlateOrder { get; set; }

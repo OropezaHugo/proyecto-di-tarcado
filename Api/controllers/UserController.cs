@@ -24,7 +24,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<UserDto>> GetUser(int id)
+    public async Task<ActionResult<UserDto>> GetUser(Guid id)
     {
         var user = await _userService.GetById(id);
         return user is not null ? Ok(user) : NotFound($"User with ID {id} not found.");
@@ -42,8 +42,8 @@ public class UserController : ControllerBase
         return CreatedAtAction(nameof(GetUser), new { id = response.Id }, response);
     }
 
-    [HttpPut("{id}")]
-    public async Task<ActionResult<UserDto>> UpdateUser([FromRoute] int id, [FromBody] UserDto entity)
+    [HttpPut("{id:guid}")]
+    public async Task<ActionResult<UserDto>> UpdateUser([FromRoute] Guid id, [FromBody] UserDto entity)
     {
         if (entity == null || id != entity.Id)
         {
@@ -61,13 +61,8 @@ public class UserController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<ActionResult> DeleteUser([FromRoute] int id)
+    public async Task<ActionResult> DeleteUser([FromRoute] Guid id)
     {
-        if (id <= 0)
-        {
-            return BadRequest("Invalid user ID.");
-        }
-        
         var existingUser = await _userService.GetById(id);
         if (existingUser == null)
         {

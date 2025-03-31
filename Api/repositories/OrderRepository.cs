@@ -41,7 +41,7 @@ public class OrderRepository: IRepository<Order>
     if (!userExists)
       throw new Exception($"El usuario con ID {entity.UserId} no existe.");
     
-    var plateOrder  = await _context.PlateOrders.AnyAsync(x => x.Id == entity.UserId);
+    var plateOrder  = await _context.PlateOrders.AnyAsync(x => x.Id == entity.PlateOrderId);
     if (!plateOrder)
       throw new Exception($"El plateOrder con ID {entity.PlateOrderId} no existe.");
     _context.Orders.Add(entity);

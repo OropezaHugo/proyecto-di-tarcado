@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Api.repositories;
 
-public class UserRepository: IRepository<User>
+public class UserRepository: IUserRepository
 {
   private readonly EscaleContext _context;
 
@@ -18,12 +18,12 @@ public class UserRepository: IRepository<User>
     return await _context.Users.ToListAsync();
   }
 
-  public async Task<User?> GetById(int id)
+  public async Task<User?> GetById(Guid id)
   {
     return await _context.Users.FindAsync(id);
   }
 
-  public async Task<bool> Delete(int id)
+  public async Task<bool> Delete(Guid id)
   {
     var user = await _context.Users.FindAsync(id);
     

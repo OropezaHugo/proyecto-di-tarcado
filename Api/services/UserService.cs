@@ -25,14 +25,14 @@ public class UserService:  IUserService
     return entitysDto;
   }
 
-  public async Task<UserDto?> GetById(int id)
+  public async Task<UserDto?> GetById(Guid id)
   {
     var entity = await _repository.GetById(id);
     var entityDto = _mapper.Map<UserDto?>(entity);
     return entityDto;  
   }
 
-  public async Task<bool> Delete(int id)
+  public async Task<bool> Delete(Guid id)
   {
     return await _repository.Delete(id);
   }
