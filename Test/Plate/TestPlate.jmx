@@ -190,7 +190,7 @@
           <stringProp name="filename"></stringProp>
         </ResultCollector>
         <hashTree/>
-        <ResultCollector guiclass="GraphVisualizer" testclass="ResultCollector" testname="Graph Results" enabled="true">
+        <ResultCollector guiclass="GraphVisualizer" testclass="ResultCollector" testname="Graph Results">
           <boolProp name="ResultCollector.error_logging">true</boolProp>
           <objProp>
             <name>saveConfig</name>
@@ -257,8 +257,8 @@
         </ConstantTimer>
         <hashTree/>
         <CounterConfig guiclass="CounterConfigGui" testclass="CounterConfig" testname="updateCounter">
-          <stringProp name="CounterConfig.start">101</stringProp>
-          <stringProp name="CounterConfig.end">500</stringProp>
+          <stringProp name="CounterConfig.start">106</stringProp>
+          <stringProp name="CounterConfig.end">506</stringProp>
           <stringProp name="CounterConfig.incr">1</stringProp>
           <stringProp name="CounterConfig.name">updateCounter</stringProp>
           <stringProp name="CounterConfig.format"></stringProp>
@@ -353,8 +353,8 @@
         </ConstantTimer>
         <hashTree/>
         <CounterConfig guiclass="CounterConfigGui" testclass="CounterConfig" testname="deleteEntity">
-          <stringProp name="CounterConfig.start">2</stringProp>
-          <stringProp name="CounterConfig.end">100</stringProp>
+          <stringProp name="CounterConfig.start">5</stringProp>
+          <stringProp name="CounterConfig.end">105</stringProp>
           <stringProp name="CounterConfig.incr">1</stringProp>
           <stringProp name="CounterConfig.name">deleteEntity</stringProp>
           <stringProp name="CounterConfig.format"></stringProp>
