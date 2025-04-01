@@ -10,4 +10,7 @@ public interface IUserService
   public Task<bool> Delete(int id);
   public Task<UserDto?> Add(UserNoIdDto entity);
   public Task<UserDto> Put(UserDto entity);
+  public Task<IEnumerable<UserDto>> GetUsersByBirthday(DateTime birthday);
+  public Task<IEnumerable<UserDto>> GetUsersByBirthdayRange(DateTime start, DateTime end);
+
 }
