@@ -37,7 +37,7 @@ public class PlateOrderRepository: IRepository<PlateOrder>
 
   public async Task<PlateOrder> Add(PlateOrder entity)
   {
-    var plateExists = await _context.Plates.AnyAsync(i => i.Id == entity.Id);
+    var plateExists = await _context.Plates.AnyAsync(i => i.Id == entity.PlateId);
     if(!plateExists)
       throw new Exception($"El plato con ID {entity.PlateId} no existe.");
     
@@ -52,7 +52,7 @@ public class PlateOrderRepository: IRepository<PlateOrder>
 
     if (existingPlateOrder != null)
     {
-      var trackedPlateOrder = _context.PlateOrders.Local.FirstOrDefault(x => x.Id == entity.Id);
+      var trackedPlateOrder = _context.PlateOrders.Local.FirstOrDefault(x => x.Id == existingPlateOrder.Id);
       if(trackedPlateOrder != null)
         _context.Entry(trackedPlateOrder).State = EntityState.Detached;
     }
