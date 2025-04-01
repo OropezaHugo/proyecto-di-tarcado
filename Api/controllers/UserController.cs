@@ -29,6 +29,20 @@ public class UserController : ControllerBase
         var user = await _userService.GetById(id);
         return user is not null ? Ok(user) : NotFound($"User with ID {id} not found.");
     }
+    
+    [HttpGet("birthdate/{date}")]
+    public async Task<ActionResult<UserDto>> GetUserByBirthdate(DateTime date)
+    {
+        var users = await _userService.GetUsersByBirthday(date);
+        return users is not null && users.Any() ? Ok(users) : NotFound($"User with birthdate {date} not found.");
+    }
+    
+    [HttpGet("birthdate/{start}/{end}")]
+    public async Task<ActionResult<UserDto>> GetUserByBirthdateRage(DateTime start, DateTime end)
+    {
+        var users = await _userService.GetUsersByBirthdayRange(start, end);
+        return users is not null && users.Any() ? Ok(users) : NotFound($"User with birthdate in range {start} to {end} not found.");
+    }
 
     [HttpPost]
     public async Task<ActionResult<UserDto>> CreateUser([FromBody] UserNoIdDto entity)
