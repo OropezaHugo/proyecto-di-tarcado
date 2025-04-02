@@ -54,4 +54,18 @@ public class UserService:  IUserService
     var entityDto = _mapper.Map<UserDto>(newEntity);
     return entityDto;
   }
+  
+  public async Task<IEnumerable<UserDto>> GetUsersByBirthday(DateTime birthday)
+  {
+    var entities = await _repository.GetUsersByBirthday(birthday);
+    var entitysDto = _mapper.Map<List<UserDto>>(entities);
+    return entitysDto;
+  }
+
+  public async Task<IEnumerable<UserDto>> GetUsersByBirthdayRange(DateTime start, DateTime end)
+  {
+    var entities = await _repository.GetUsersByBirthdayRange(start, end);
+    var entitysDto = _mapper.Map<List<UserDto>>(entities);
+    return entitysDto;
+  }
 }

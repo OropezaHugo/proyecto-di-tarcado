@@ -59,4 +59,21 @@ public class UserRepository: IUserRepository
     await _context.SaveChangesAsync();
     return entity;
   }
+  
+  public async Task<IEnumerable<User>> GetUsersByBirthday(DateTime birthday)
+  {
+    return await _context.Users
+      .Where(u => u.BirthDate.Day == birthday.Day && u.BirthDate.Month == birthday.Month && u.BirthDate.Year == birthday.Year)
+      .ToListAsync();
+  }
+
+  public async Task<IEnumerable<User>> GetUsersByBirthdayRange(DateTime start, DateTime end)
+  {
+    DateOnly startDate = DateOnly.FromDateTime(start);
+    DateOnly endDate = DateOnly.FromDateTime(end);
+
+    return await _context.Users
+      .Where(u => u.BirthDate >= startDate && u.BirthDate <= endDate)
+      .ToListAsync();
+  }
 }
